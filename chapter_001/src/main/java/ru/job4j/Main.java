@@ -5,15 +5,15 @@ public class Main {
         System.out.println("Hello job4j!");
         short age = 28; //возраст
 
-        char gender = 'м'; //пол
+        char gender = 'm'; //пол
 
         float height = 180.3f; //рост
 
-        int brick_count = 40000; //количество кирпичей для постройки дома
+        int brickCount = 40000; //количество кирпичей для постройки дома
 
-        long bacteria_count = 100000000000000l; //количество бактерий
+        long bacteriaCount = 100000000000000L; //количество бактерий
 
-        long distance = 149600000000l; //расстояние до космических объектов
+        long distance = 149600000000L; //расстояние до космических объектов
 
         boolean resolution = true; //разрешение на работу
 
