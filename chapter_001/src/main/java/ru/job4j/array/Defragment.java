@@ -6,7 +6,7 @@ public class Defragment {
         for (int index = 0; index < array.length; index++) {
             if (array[index] == null) {
                 int i = index + 1;
-                while(i < array.length) {
+                while (i < array.length) {
                     if (array[i] != null) {
                         array[index] = array[i];
                         array[i] = null;

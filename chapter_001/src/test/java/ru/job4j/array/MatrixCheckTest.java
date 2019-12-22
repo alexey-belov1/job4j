@@ -81,7 +81,7 @@ public class MatrixCheckTest {
                 {' ', ' ', 'X', ' ', ' '},
                 {' ', ' ', 'X', ' ', ' '},
         };
-        boolean result = MatrixCheck.monoVertical(input,1);
+        boolean result = MatrixCheck.monoVertical(input, 1);
         assertThat(result, is(true));
     }
 
@@ -94,7 +94,7 @@ public class MatrixCheckTest {
                 {' ', ' ', 'X', ' ', ' '},
                 {' ', ' ', 'X', ' ', ' '},
         };
-        boolean result = MatrixCheck.monoVertical(input,1);
+        boolean result = MatrixCheck.monoVertical(input, 1);
         assertThat(result, is(false));
     }
 }
