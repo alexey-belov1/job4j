@@ -72,18 +72,40 @@ public class Tracker {
     }
 
     /**
-     * Метод возвращает заявку с указанным ключом. Если такой заявки нет, то возвращает null
+     * Метод возвращает заявку с указанным ключом
      * @param id - уникальный ключ
      * @return Заявка с указанным ключом
      */
     public Item findById(String id) {
-        Item itemWithId = null;
-        for (int i = 0; i < items.length; i++) {
+        return items[indexOf(id)];
+    }
+
+    /**
+     * Метод возвращает индекс в массиве с заявками по указанному ключу
+     * @param id - уникальный ключ
+     * @return Индекс в массиве по указанному ключу
+     */
+    private int indexOf(String id) {
+        int rsl = -1;
+        for (int i = 0; i < position; i++) {
             if (items[i].getId().equals(id)) {
-                itemWithId = items[i];
+                rsl = i;
                 break;
             }
         }
-        return itemWithId;
+        return rsl;
+    }
+
+    /**
+     * Метод заменяет заявку с указанным уникальный номером на новую. Уникальный ключ не меняется
+     * @param id - уникальный ключ заявки, которую необходимо заменить
+     * @param item - новая заявка
+     */
+    public void replace(String id, Item item) {
+        items[indexOf(id)].setName(item.getName());
+        /* альтернативный вариант
+        items[indexOf(id)] = item;
+        item.setId(id);
+        */
     }
 }
