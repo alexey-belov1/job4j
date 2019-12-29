@@ -77,7 +77,7 @@ public class Tracker {
      * @return Заявка с указанным ключом
      */
     public Item findById(String id) {
-        return items[indexOf(id)];
+        return (indexOf(id) != -1) ? (items[indexOf(id)]) : (null);
     }
 
     /**
@@ -107,5 +107,22 @@ public class Tracker {
         items[indexOf(id)] = item;
         item.setId(id);
         */
+    }
+
+    /**
+     * Метод удаляет заявку по уникальному ключу
+     * @param id - уникальный ключ заявки, которую необходимо удалить
+     */
+    public void delete(String id) {
+        if (indexOf(id) != -1) {
+            int start = indexOf(id) + 1;
+            int distPos = indexOf(id);
+            int size = position - indexOf(id);
+            System.arraycopy(items, start, items, distPos, size);
+            items[position] = null;
+            position--;
+        } else {
+            System.out.println("Нет элемента с указанным id");
+        }
     }
 }
