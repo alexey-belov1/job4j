@@ -43,15 +43,7 @@ public class Tracker {
      * @return Все заявки
      */
     public Item[] findAll() {
-        int size = 0;
-        Item[] itemsWithoutNull = new Item[items.length];
-        for (int i = 0; i < position; i++) {
-            if (items[i].getId() != null) {
-                itemsWithoutNull[size] = items[i];
-                size++;
-            }
-        }
-        return Arrays.copyOf(itemsWithoutNull, size);
+        return Arrays.copyOf(items, position);
     }
 
     /**
@@ -102,11 +94,12 @@ public class Tracker {
      * @param item - новая заявка
      */
     public void replace(String id, Item item) {
-        items[indexOf(id)].setName(item.getName());
-        /* альтернативный вариант
-        items[indexOf(id)] = item;
-        item.setId(id);
-        */
+        int index = indexOf(id);
+        if (index != -1) {
+            items[index].setName(item.getName());
+        } else {
+            System.out.println("Нет элемента с указанным id");
+        }
     }
 
     /**
@@ -114,10 +107,11 @@ public class Tracker {
      * @param id - уникальный ключ заявки, которую необходимо удалить
      */
     public void delete(String id) {
-        if (indexOf(id) != -1) {
-            int start = indexOf(id) + 1;
-            int distPos = indexOf(id);
-            int size = position - indexOf(id);
+        int index = indexOf(id);
+        if (index != -1) {
+            int start = index + 1;
+            int distPos = index;
+            int size = position - index;
             System.arraycopy(items, start, items, distPos, size);
             items[position] = null;
             position--;
