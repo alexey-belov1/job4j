@@ -92,21 +92,26 @@ public class Tracker {
      * Метод заменяет заявку с указанным уникальный номером на новую. Уникальный ключ не меняется
      * @param id - уникальный ключ заявки, которую необходимо заменить
      * @param item - новая заявка
+     * @return true - если заявка успешно заменена, false - в противном случае
      */
-    public void replace(String id, Item item) {
+    public boolean replace(String id, Item item) {
+        boolean rsl = false;
         int index = indexOf(id);
         if (index != -1) {
-            items[index].setName(item.getName());
-        } else {
-            System.out.println("Нет элемента с указанным id");
+            items[index] = item;
+            item.setId(id);
+            rsl = true;
         }
+        return rsl;
     }
 
     /**
      * Метод удаляет заявку по уникальному ключу
      * @param id - уникальный ключ заявки, которую необходимо удалить
+     * @return true - если заявка успешно удалена, false - в противном случае
      */
-    public void delete(String id) {
+    public boolean delete(String id) {
+        boolean rsl = false;
         int index = indexOf(id);
         if (index != -1) {
             int start = index + 1;
@@ -115,8 +120,8 @@ public class Tracker {
             System.arraycopy(items, start, items, distPos, size);
             items[position] = null;
             position--;
-        } else {
-            System.out.println("Нет элемента с указанным id");
+            rsl = true;
         }
+        return rsl;
     }
 }
