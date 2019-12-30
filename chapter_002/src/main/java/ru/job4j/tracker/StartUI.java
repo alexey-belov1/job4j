@@ -28,12 +28,21 @@ public class StartUI {
                 String id = scanner.nextLine();
                 System.out.print("Enter new name: ");
                 String name = scanner.nextLine();
-                tracker.replace(id, new Item(name));
+                if (tracker.replace(id, new Item(name))) {
+                    System.out.println("Replace completed successfully!");
+                } else {
+                    System.out.println("Replace was failed!");
+                }
             } else if (select == 3) {
                 System.out.println("=== Delete Item ====");
                 System.out.print("Enter id selected item: ");
                 String id = scanner.nextLine();
-                tracker.delete(id);
+                if (tracker.delete(id)) {
+                    System.out.println("Delete completed successfully!");
+                } else {
+                    System.out.println("Delete was failed!");
+                }
+
             } else if (select == 4) {
                 System.out.println("=== Find item by id ====");
                 System.out.print("Enter id: ");
