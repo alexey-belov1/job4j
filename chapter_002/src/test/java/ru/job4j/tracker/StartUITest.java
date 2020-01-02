@@ -74,4 +74,36 @@ public class StartUITest {
         System.setOut(def);
     }
 
+    @Test
+    public void whenInvalidInput() {
+        ByteArrayOutputStream mem = new ByteArrayOutputStream();
+        PrintStream out = System.out;
+        System.setOut(new PrintStream(mem));
+        ValidateInput input = new ValidateInput(
+                new StubInput(new String[] {"invalid", "0"})
+        );
+        input.askInt("Enter", 1);
+        assertThat(
+                mem.toString(),
+                is(String.format("Please enter validate data again %n"))
+        );
+        System.setOut(out);
+    }
+
+    @Test
+    public void whenInvalidNumberInput() {
+        ByteArrayOutputStream mem = new ByteArrayOutputStream();
+        PrintStream out = System.out;
+        System.setOut(new PrintStream(mem));
+        ValidateInput input = new ValidateInput(
+                new StubInput(new String[] {"-1", "0"})
+        );
+        input.askInt("Enter", 1);
+        assertThat(
+                mem.toString(),
+                is(String.format("Please select key from menu %n"))
+        );
+        System.setOut(out);
+    }
+
 }
