@@ -27,6 +27,16 @@ public class Account {
         this.balance = balance;
     }
 
+    public boolean transfer(Account destination, double amount) {
+        boolean success = false;
+        if (amount > 0 && amount <= this.balance && destination != null) {
+            success = true;
+            this.balance -= amount;
+            destination.balance += amount;
+        }
+        return success;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

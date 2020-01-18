@@ -35,23 +35,23 @@ public class BankService {
     }
 
     public Account findByRequisite(String passport, String requisite) {
+        Account acccountOut = null;
         User user = findByPassport(passport);
-        int index = this.users.get(user).indexOf(new Account(requisite, -1));
-        return (index != -1) ? this.users.get(user).get(index) : null;
+        for (Account account : this.users.get(user)) {
+            if (account.getRequisite() == requisite) {
+                acccountOut = account;
+                break;
+            }
+        }
+        return acccountOut;
     }
 
     public boolean transferMoney(String srcPassport, String srcRequisite,
                                  String destPassport, String destRequisite, double amount) {
-        boolean rsl = false;
         Account srcAccount = findByRequisite(srcPassport, srcRequisite);
-        Account destccount = findByRequisite(destPassport, destRequisite);
-        if (srcAccount != null
-            && destccount != null
-            && srcAccount.getBalance() - amount >= 0) {
-            srcAccount.setBalance(srcAccount.getBalance() - amount);
-            destccount.setBalance(destccount.getBalance() + amount);
-                rsl = true;
-        }
-        return rsl;
+        Account destAccount = findByRequisite(destPassport, destRequisite);
+        return srcAccount != null
+                && destAccount != null
+                && srcAccount.transfer(destAccount, amount);
     }
 }
