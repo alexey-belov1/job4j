@@ -38,7 +38,7 @@ public class BankService {
         Account acccountOut = null;
         User user = findByPassport(passport);
         for (Account account : this.users.get(user)) {
-            if (account.getRequisite() == requisite) {
+            if (account.getRequisite().equals(requisite)) {
                 acccountOut = account;
                 break;
             }
