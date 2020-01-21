@@ -19,4 +19,16 @@ public class CalculatorTest {
         );
         assertThat(buffer, is(Arrays.asList(1D, 2D, 3D)));
     }
+
+    @Test
+    public void whenAdd1Until3MathUtil() {
+        Calculator calc = new Calculator();
+        List<Double> buffer = new ArrayList<>();
+        calc.multiple(
+                0, 3, 1,
+                MathUtil::add, //static call
+                buffer::add // non-static call
+        );
+        assertThat(buffer, is(Arrays.asList(1D, 2D, 3D)));
+    }
 }
