@@ -1,9 +1,11 @@
 package ru.job4j.stream;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class School {
     public static List<Student> collect(List<Student> students, Predicate<Student> predict) {
@@ -11,6 +13,15 @@ public class School {
                 .filter(predict)
                 .collect(Collectors.toList());
     }
+
+    public static List<Student> levelOf(List<Student> students, int bound) {
+        return students.stream()
+                .sorted(Collections.reverseOrder())
+                .flatMap(Stream::ofNullable)
+                .takeWhile(x -> x.getScore() > bound)
+                .collect(Collectors.toList());
+    }
+
 
     public static void main(String[] args) {
         List<Student> studentsList = List.of(
@@ -23,5 +34,7 @@ public class School {
                 x -> x.getSurname(),
                 x -> x)
         );
+
+        System.out.println(School.levelOf(studentsList, 20));
     }
 }
