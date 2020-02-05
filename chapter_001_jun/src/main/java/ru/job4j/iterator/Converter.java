@@ -2,6 +2,7 @@ package ru.job4j.iterator;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Converter {
 
@@ -11,20 +12,18 @@ public class Converter {
 
             @Override
             public boolean hasNext() {
-                nextWhileEmpty();
+                while (!itInteger.hasNext() && it.hasNext()) {
+                    itInteger = it.next();
+                }
                 return itInteger.hasNext();
             }
 
             @Override
             public Integer next() {
-                nextWhileEmpty();
-                return itInteger.next();
-            }
-
-            private void nextWhileEmpty() {
-                while (!itInteger.hasNext() && it.hasNext()) {
-                    itInteger = it.next();
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
                 }
+                return itInteger.next();
             }
         };
     }
