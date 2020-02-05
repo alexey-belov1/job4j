@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 public class EvenIterator implements Iterator {
     private final int[] values;
-    private int index = -1;
+    private int index = 0;
 
     public EvenIterator(final int[]values) {
         this.values = values;
@@ -14,22 +14,20 @@ public class EvenIterator implements Iterator {
 
     @Override
     public boolean hasNext() {
-        return nextIndex() != -1;
+        if (this.index != -1) {
+            this.index = Stream.iterate(this.index, i -> i < values.length, i -> i + 1)
+                    .filter(i -> values[i] % 2 == 0)
+                    .findFirst()
+                    .orElse(-1);
+        }
+        return this.index != -1;
     }
 
     @Override
     public Object next() {
-        this.index = nextIndex();
-        if (this.index == -1) {
+        if (!hasNext()) {
             throw new NoSuchElementException();
         }
-        return values[this.index];
-    }
-
-    private int nextIndex() {
-        return Stream.iterate(this.index + 1, i -> i < values.length, i -> i + 1)
-                .filter(i -> values[i] % 2 == 0)
-                .findFirst()
-                .orElse(-1);
+        return values[this.index++];
     }
 }
