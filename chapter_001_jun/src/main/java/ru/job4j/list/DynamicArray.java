@@ -12,15 +12,19 @@ public class DynamicArray<E> implements Iterable<E> {
     private int modCount = 0;
 
     public void add(E value) {
-        if (this.index == this.objects.length) {
-            this.objects = Arrays.copyOf(this.objects, this.objects.length * 2);
-            modCount++;
-        }
+        expandObjects();
         objects[this.index++] = value;
     }
 
     public E get(int index) {
         return (E) objects[index];
+    }
+
+    private void expandObjects() {
+        if (this.index == this.objects.length) {
+            this.objects = Arrays.copyOf(this.objects, this.objects.length * 2);
+            modCount++;
+        }
     }
 
     @Override
@@ -31,7 +35,7 @@ public class DynamicArray<E> implements Iterable<E> {
 
             @Override
             public boolean hasNext() {
-                return (this.indexIt != objects.length) && objects[this.indexIt] != null;
+                return this.indexIt < index;
             }
 
             @Override
