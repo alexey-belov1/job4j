@@ -47,10 +47,7 @@ public class SimpleArray<T> implements Iterable<T> {
 
             @Override
             public boolean hasNext() {
-                while (indexIt < array.length - 1 && array[indexIt] == null) {
-                    indexIt++;
-                }
-                return array[indexIt] != null;
+                return indexIt < index;
             }
 
             @Override
