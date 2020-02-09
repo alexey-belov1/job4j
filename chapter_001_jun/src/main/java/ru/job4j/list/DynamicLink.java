@@ -22,6 +22,9 @@ public class DynamicLink<E> implements Iterable<E> {
     }
 
     public E get(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
         return getNode(index).data;
     }
 
