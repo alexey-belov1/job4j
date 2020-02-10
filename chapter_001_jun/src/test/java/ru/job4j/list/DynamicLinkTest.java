@@ -28,6 +28,13 @@ public class DynamicLinkTest {
     }
 
     @Test
+    public void whenRemove() {
+        link.remove(1);
+        assertThat(link.get(0), is(1));
+        assertThat(link.get(1), is(3));
+    }
+
+    @Test
     public void whenCheckIterator() {
         Iterator<Integer> it = link.iterator();
         assertThat(it.hasNext(), is(true));

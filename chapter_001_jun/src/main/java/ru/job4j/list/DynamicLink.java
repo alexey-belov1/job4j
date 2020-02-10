@@ -28,6 +28,23 @@ public class DynamicLink<E> implements Iterable<E> {
         return getNode(index).data;
     }
 
+    public void remove(int index) {
+        if (this.size == 0) {
+            throw new NoSuchElementException();
+        }
+
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        } else if (index == 0) {
+            this.first = null;
+        } else {
+            Node<E> nodeTemp = getNode(index - 1);
+            nodeTemp.next = nodeTemp.next.next;
+        }
+        size--;
+        modCount++;
+    }
+
     private Node<E> getNode(int index) {
         Node<E> nodeTemp = this.first;
         for (int i = 0; i < index; i++) {
