@@ -14,8 +14,17 @@ public class User {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(name, children, birthday);
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        User user = (User) o;
+        return Objects.equals(this.name, user.name)
+                && this.children == user.children
+                && Objects.equals(this.birthday, user.birthday);
     }
 
     /*
@@ -27,12 +36,16 @@ public class User {
     В данном случае объекты имеют разные хэшкоды, и следовательно объекты не равны (метод equals при добавлении в Map вызываться даже не будет, хотя тоже вернул бы false).
      */
 
-
     /*
     Задача: 3. Переопределить только hashCode
     В карту добавлены две записи, поскольку их ключи не равны. После переопределения методоа hashCode объекты user1 и user2 имеют одинаковые хэшкоды, т.к. имеют одинаковые значения полей.
     Однако равенства хэшкодов недостаточно, чтобы признать, что ключи равны друг другу.
     Метод equals для данных объектов по-умолчанию вернет значение false, поскольку будет сравнивать адреса объектов в памяти.
+    */
+
+    /*
+    Задача: 4. Переопределить только equals
+    В карту добавлены две записи, поскольку хэшкоды ключей не равны. Переопределенный метод equals даже не будет вызываться, хотя вернул бы true.
     */
 
     public static void main(String[] args) {
