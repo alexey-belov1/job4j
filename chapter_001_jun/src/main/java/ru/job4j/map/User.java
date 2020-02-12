@@ -14,6 +14,11 @@ public class User {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(name, children, birthday);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -47,6 +52,13 @@ public class User {
     Задача: 4. Переопределить только equals
     В карту добавлены две записи, поскольку хэшкоды ключей не равны. Переопределенный метод equals даже не будет вызываться, хотя вернул бы true.
     */
+
+    /*
+    Задача: 5. Перекрывать и equals и hashCode
+    В карту добавлена запись со значением "first", а затем она была перезаписана записью со значением "second", поскольку ключи у этих записей равны.
+    Для ключей были переопределены методы hashCode и equals.
+    Поля у ключей одинаковые, следовательно хэшкоды ключей равны и equals возвращает для них true.
+     */
 
     public static void main(String[] args) {
         User user1 = new User("Vasya", 2, new GregorianCalendar(1990, Calendar.JANUARY, 1));
