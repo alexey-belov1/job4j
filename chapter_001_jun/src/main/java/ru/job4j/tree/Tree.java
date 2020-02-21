@@ -2,8 +2,9 @@ package ru.job4j.tree;
 
 import java.util.*;
 
-class Tree<E extends Comparable<E>> implements SimpleTree<E> {
+class Tree<E extends Comparable<E>> implements SimpleTree<E>, Iterable<E> {
     private final Node<E> root;
+    private int modCount = 0;
 
     Tree(final E root) {
         this.root = new Node<>(root);
@@ -16,6 +17,7 @@ class Tree<E extends Comparable<E>> implements SimpleTree<E> {
             Optional<Node<E>> element = findBy(parent);
             if (element.isPresent()) {
                 element.get().children.add(new Node<>(child));
+                modCount++;
                 rsl = true;
             }
         }
@@ -53,5 +55,34 @@ class Tree<E extends Comparable<E>> implements SimpleTree<E> {
             }
         }
         return result;
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new Iterator<E>() {
+
+            private int modCountIt = modCount;
+            Queue<Node<E>> data = new LinkedList<>(List.of(root));
+
+            @Override
+            public boolean hasNext() {
+                return !this.data.isEmpty();
+            }
+
+            @Override
+            public E next() {
+                if (this.modCountIt != modCount) {
+                    throw new ConcurrentModificationException();
+                }
+
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+
+                Node<E> el = this.data.remove();
+                this.data.addAll(el.children);
+                return el.value;
+            }
+        };
     }
 }
