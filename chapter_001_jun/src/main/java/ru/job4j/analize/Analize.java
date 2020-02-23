@@ -1,6 +1,7 @@
 package ru.job4j.analize;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Analize {
 
@@ -11,14 +12,15 @@ public class Analize {
         int deleted;
         int equalCount = 0;
 
-        for (User userPre : previous) {
-            for (User userCur : current) {
-                if (userCur.id == userPre.id) {
-                    if (userCur.name.equals(userPre.name)) {
-                        equalCount++;
-                    } else {
-                        changed++;
-                    }
+        Map<Integer, User> mapPre = previous.stream().collect(Collectors.toMap(x -> x.id, x -> x));
+
+        for (User userCur : current) {
+            User user = mapPre.get(userCur.id);
+            if (user != null) {
+                if (user.name.equals(userCur.name)) {
+                    equalCount++;
+                } else {
+                    changed++;
                 }
             }
         }
