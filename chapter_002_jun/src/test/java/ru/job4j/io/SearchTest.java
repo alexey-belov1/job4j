@@ -42,16 +42,19 @@ public class SearchTest {
         new File(child, "child.txt").createNewFile();
         new File(child, "child.doc").createNewFile();
         new File(child, "child.xml").createNewFile();
+        new File(child, "child.png").createNewFile();
 
         List<File> listEmpty = new Search().files(grandParent.getPath(), Collections.emptyList());
         List<File> listTxt = new Search().files(grandParent.getPath(), List.of("txt"));
         List<File> listTxtDoc = new Search().files(grandParent.getPath(), List.of("txt", "doc"));
         List<File> listTxtDocXML = new Search().files(grandParent.getPath(), List.of("txt", "doc", "xml"));
+        List<File> listAll = new Search().files(grandParent.getPath());
 
         assertThat(listEmpty.size(), is(0));
         assertThat(listTxt.size(), is(4));
         assertThat(listTxtDoc.size(), is(8));
         assertThat(listTxtDocXML.size(), is(12));
+        assertThat(listAll.size(), is(13));
     }
 
 

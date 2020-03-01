@@ -5,24 +5,39 @@ import java.util.*;
 
 public class Search {
 
-    List<File> files(String parent, List<String> exts) {
+    public List<File> files(String parent) {
+        return getFiles(parent, null, true);
+    }
+
+    public List<File> files(String parent, List<String> exts) {
+        return getFiles(parent, exts, false);
+    }
+
+    private List<File> getFiles(String parent, List<String> exts, boolean isALL) {
         List<File> result = new ArrayList<>();
-        File[] listfiles = new File(parent).listFiles();
-        if (listfiles != null) {
-            Arrays.stream(listfiles)
-                .forEach(x -> {
-                            if (x.isDirectory()) {
-                                result.addAll(files(x.getPath(), exts));
-                            } else {
-                                String name = x.getName();
-                                int index = name.lastIndexOf(".");
-                                if (index != -1 && exts.contains(name.substring(index + 1))) {
-                                    result.add(x);
-                                }
-                            }
-                        }
-                );
+
+        Queue<File> data = new LinkedList<>();
+        if (new File(parent).isDirectory()) {
+            data.addAll(List.of(new File(parent).listFiles()));
         }
+
+        while (!data.isEmpty()) {
+            File file = data.poll();
+            if (file.isDirectory()) {
+                data.addAll(List.of(file.listFiles()));
+            } else {
+                if (isALL) {
+                    result.add(file);
+                } else {
+                    String name = file.getName();
+                    int index = name.lastIndexOf(".");
+                    if (index != -1 && exts.contains(name.substring(index + 1))) {
+                        result.add(file);
+                    }
+                }
+            }
+        }
+
         return result;
     }
 
