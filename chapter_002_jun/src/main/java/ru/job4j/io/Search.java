@@ -6,14 +6,18 @@ import java.util.*;
 public class Search {
 
     public List<File> files(String parent) {
-        return getFiles(parent, null, true);
+        return getFiles(parent, 0, null, null);
+    }
+
+    public List<File> files(String parent, String name) {
+        return getFiles(parent, 1, null, name);
     }
 
     public List<File> files(String parent, List<String> exts) {
-        return getFiles(parent, exts, false);
+        return getFiles(parent, 2, exts, null);
     }
 
-    private List<File> getFiles(String parent, List<String> exts, boolean isALL) {
+    private List<File> getFiles(String parent, int option, List<String> exts, String nameFile) {
         List<File> result = new ArrayList<>();
 
         Queue<File> data = new LinkedList<>();
@@ -25,10 +29,19 @@ public class Search {
             File file = data.poll();
             if (file.isDirectory()) {
                 data.addAll(List.of(file.listFiles()));
+                if (option == 1) {
+                    if (file.getName().toLowerCase().contains(nameFile.toLowerCase())) {
+                        result.add(file);
+                    }
+                }
             } else {
-                if (isALL) {
+                if (option == 0) {
                     result.add(file);
-                } else {
+                } else if (option == 1) {
+                    if (file.getName().toLowerCase().contains(nameFile.toLowerCase())) {
+                        result.add(file);
+                    }
+                } else if (option == 2) {
                     String name = file.getName();
                     int index = name.lastIndexOf(".");
                     if (index != -1 && exts.contains(name.substring(index + 1))) {
@@ -40,5 +53,4 @@ public class Search {
 
         return result;
     }
-
 }

@@ -49,12 +49,14 @@ public class SearchTest {
         List<File> listTxtDoc = new Search().files(grandParent.getPath(), List.of("txt", "doc"));
         List<File> listTxtDocXML = new Search().files(grandParent.getPath(), List.of("txt", "doc", "xml"));
         List<File> listAll = new Search().files(grandParent.getPath());
+        List<File> listName = new Search().files(grandParent.getPath(), "parent");
 
         assertThat(listEmpty.size(), is(0));
         assertThat(listTxt.size(), is(4));
         assertThat(listTxtDoc.size(), is(8));
         assertThat(listTxtDocXML.size(), is(12));
         assertThat(listAll.size(), is(13));
+        assertThat(listName.size(), is(11));
     }
 
 
