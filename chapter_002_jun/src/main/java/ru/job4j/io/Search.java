@@ -1,56 +1,66 @@
 package ru.job4j.io;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.*;
 
 public class Search {
 
     public List<File> files(String parent) {
-        return getFiles(parent, 0, null, null);
+        return getFiles(parent, null);
     }
 
     public List<File> files(String parent, String name) {
-        return getFiles(parent, 1, null, name);
+        return getFiles(parent, new NameFilter(name));
     }
 
     public List<File> files(String parent, List<String> exts) {
-        return getFiles(parent, 2, exts, null);
+        return getFiles(parent, new ExtsFilter(exts));
     }
 
-    private List<File> getFiles(String parent, int option, List<String> exts, String nameFile) {
+    private List<File> getFiles(String parent, FilenameFilter filter) {
         List<File> result = new ArrayList<>();
 
         Queue<File> data = new LinkedList<>();
         if (new File(parent).isDirectory()) {
-            data.addAll(List.of(new File(parent).listFiles()));
-        }
-
-        while (!data.isEmpty()) {
-            File file = data.poll();
-            if (file.isDirectory()) {
-                data.addAll(List.of(file.listFiles()));
-                if (option == 1) {
-                    if (file.getName().toLowerCase().contains(nameFile.toLowerCase())) {
-                        result.add(file);
-                    }
-                }
-            } else {
-                if (option == 0) {
+            data.add(new File(parent));
+            while (!data.isEmpty()) {
+                File file = data.poll();
+                if (file.isDirectory()) {
+                    data.addAll(List.of(file.listFiles(filter)));
+                } else {
                     result.add(file);
-                } else if (option == 1) {
-                    if (file.getName().toLowerCase().contains(nameFile.toLowerCase())) {
-                        result.add(file);
-                    }
-                } else if (option == 2) {
-                    String name = file.getName();
-                    int index = name.lastIndexOf(".");
-                    if (index != -1 && exts.contains(name.substring(index + 1))) {
-                        result.add(file);
-                    }
                 }
             }
         }
-
         return result;
+    }
+
+    private class ExtsFilter implements FilenameFilter {
+        private List<String> exts;
+
+        public ExtsFilter(List<String> exts) {
+            this.exts = exts;
+        }
+
+        @Override
+        public boolean accept(File dir, String name) {
+            return new File(dir + "/" + name).isDirectory()
+                    || exts.stream().anyMatch(x -> name.toLowerCase().endsWith(x.toLowerCase()));
+        }
+    }
+
+    private class NameFilter implements FilenameFilter {
+        private String name;
+
+        public NameFilter(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public boolean accept(File dir, String name) {
+            return new File(dir + "/" + name).isDirectory()
+                    || name.toLowerCase().contains(this.name.toLowerCase());
+        }
     }
 }
