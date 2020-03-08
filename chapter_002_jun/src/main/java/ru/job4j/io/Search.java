@@ -18,6 +18,10 @@ public class Search {
         return getFiles(parent, new ExtsFilter(exts));
     }
 
+    public List<File> files(String parent, FilenameFilter filter) {
+        return getFiles(parent, filter);
+    }
+
     private List<File> getFiles(String parent, FilenameFilter filter) {
         List<File> result = new ArrayList<>();
 

@@ -9,7 +9,8 @@ public class Zip {
 
     public void pack(Args args) {
 
-        List<File> sources = seekBy(args.directory(), new ExtFilter(args.exclude()));
+        List<File> sources = new Search().files(args.directory(), new ExtFilter(args.exclude()));
+
         if (sources != null) {
             try (ZipOutputStream zip = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(args.output())))) {
                 for (File file : sources) {
@@ -22,24 +23,6 @@ public class Zip {
                 e.printStackTrace();
             }
         }
-    }
-
-    private List<File> seekBy(String directory, FilenameFilter filter) {
-        List<File> result = new ArrayList<>();
-
-        Queue<File> data = new LinkedList<>();
-        if (new File(directory).isDirectory()) {
-            data.add(new File(directory));
-            while (!data.isEmpty()) {
-                File file = data.poll();
-                if (file.isDirectory()) {
-                    data.addAll(List.of(file.listFiles(filter)));
-                } else {
-                    result.add(file);
-                }
-            }
-        }
-        return result;
     }
 
     private String getPathToZip(String root, File file) {
