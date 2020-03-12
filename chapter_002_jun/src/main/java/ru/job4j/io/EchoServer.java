@@ -10,7 +10,7 @@ public class EchoServer {
 
     private String getMsg(String text) {
         String result = "";
-        Pattern pattern = Pattern.compile("\\?msg=(\\S*)");
+        Pattern pattern = Pattern.compile("^\\?msg=(\\S*)");
         Matcher matcher = pattern.matcher(text);
 
         if (matcher.find()) {
@@ -18,6 +18,18 @@ public class EchoServer {
         }
         return result;
     }
+
+    private String getRequest(String text) {
+        String result = "";
+        Pattern pattern = Pattern.compile("/(\\S*)");
+        Matcher matcher = pattern.matcher(text);
+
+        if (matcher.find()) {
+            result = matcher.group().substring(1);
+        }
+        return result;
+    }
+
 
     public static void main(String[] args) throws IOException {
         try (ServerSocket server = new ServerSocket(9000)) {
@@ -35,11 +47,19 @@ public class EchoServer {
                     }
 
                     in.reset();
-                    if (new EchoServer().getMsg(in.readLine()).equals("Bye")) {
-                        out.write("Server off".getBytes());
+                    String request = new EchoServer().getRequest(in.readLine());
+                    String msg = new EchoServer().getMsg(request);
+
+                    out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
+                    if (msg.equals("Exit")) {
                         break;
+                    } else if (msg.equals("Hello")) {
+                        out.write("Hello\n".getBytes());
+                    } else if (!msg.isEmpty()) {
+                        out.write((msg + "\n").getBytes());
+                    } else {
+                        out.write((request + "\n").getBytes());
                     }
-                    out.write("HTTP/1.1 200 OK\r\n\\".getBytes());
                 }
             }
         }
