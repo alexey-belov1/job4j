@@ -1,6 +1,7 @@
 package ru.job4j.io;
 
-import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -19,50 +20,52 @@ public class Chat {
     public void chat(String source, String target) {
         List<String> answers = readAnswers(source);
 
-        try (PrintWriter out = new PrintWriter(new FileOutputStream(target))) {
+        Random random = new Random();
+        boolean workChat = true;
+        String question = "";
+        List<String> log = new ArrayList<>();
 
-            Random random = new Random();
-            boolean workChat = true;
-            String question = "";
+        while (!question.equals(endChat)) {
+            question = input.askStr("User: ");
+            log.add("User: " + question);
 
-            while (!question.equals(endChat)) {
-                question = input.askStr("User: ");
-                out.println("User: " + question);
-
-                if (question.equals(endChat) || question.equals(stopChat)) {
-                    workChat = false;
-                    continue;
-                }
-
-                if (question.equals(continueChat)) {
-                    workChat = true;
-                    continue;
-                }
-
-                if (workChat) {
-                    String answer = answers.get(random.nextInt(answers.size()));
-                    out.println("Bot: " + answer);
-                    output.accept("Bot: " + answer);
-                }
+            if (question.equals(endChat) || question.equals(stopChat)) {
+                workChat = false;
+                continue;
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (question.equals(continueChat)) {
+                workChat = true;
+                continue;
+            }
+
+            if (workChat) {
+                String answer = answers.get(random.nextInt(answers.size()));
+                log.add("Bot: " + answer);
+                output.accept("Bot: " + answer);
+            }
         }
+
+        writeLog(target, log);
     }
 
     private List<String> readAnswers(String source) {
-        List<String> result = new ArrayList<>();
-        try (BufferedReader read = new BufferedReader(new FileReader(new File(source)))) {
-            String line;
-            while ((line = read.readLine()) != null) {
-                result.add(line);
-            }
+        List<String> result = null;
+        try {
+            result = Files.readAllLines(Paths.get(source));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return result;
+    }
+
+    private void writeLog(String target, List<String> log) {
+        try {
+            Files.write(Paths.get(target), log);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

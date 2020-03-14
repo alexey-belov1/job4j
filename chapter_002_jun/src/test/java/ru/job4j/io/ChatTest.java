@@ -1,90 +1,77 @@
 package ru.job4j.io;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class ChatTest {
-    private String path = System.getProperty("java.io.tmpdir");
-
-    private final ByteArrayOutputStream out = new ByteArrayOutputStream();
-    private final Consumer<String> output = new Consumer<>() {
-        private final PrintStream stdout = new PrintStream(out);
-
-        @Override
-        public void accept(String s) {
-            stdout.println(s);
-        }
-    };
+    private final String path = System.getProperty("java.io.tmpdir");
+    private File file;
+    private List<String> answersIn, answersOut;
+    private String pathLog;
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder(new File(path));
 
-    @Test
-    public void whenChat() throws IOException {
+    @Before
+    public void init() throws IOException {
+        file = folder.newFile("answers.txt");
 
-        File file = folder.newFile("answers.txt");
+        answersIn = List.of("Привет! Я бот", "Не отвлекай меня");
+        answersOut = answersIn.stream().map(x -> "Bot: " + x).collect(Collectors.toList());
 
-        try (PrintWriter out = new PrintWriter(file)) {
-            out.println("Привет! Я бот");
-            out.println("Ничего не знаю");
-            out.println("Не отвлекай меня");
+        try {
+            Files.write(Paths.get(file.getPath()), answersIn);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        List<String> answers = new ArrayList<>();
-        try (BufferedReader read = new BufferedReader(new FileReader(file))) {
-            read.lines().forEach(answers::add);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        String[] questions = {
-                "Привет",
-                "Напиши что-нибудь",
-                "Стоп",
-                "Напиши что-нибудь",
-                "Продолжить",
-                "Напиши что-нибудь",
-                "Закончить",
-                "Пока"
-        };
-        StubInput input = new StubInput(questions);
-
-        String pathLog = folder.getRoot() + "/chat.log";
-
-        new Chat(input, this.output).chat(file.getPath(), pathLog);
-
-        List<String> result = new ArrayList<>();
-        try (BufferedReader read = new BufferedReader(new FileReader(pathLog))) {
-            read.lines().forEach(result::add);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        assertThat(result.get(0), is("User: " + questions[0]));
-        assertThat(result.get(2), is("User: " + questions[1]));
-        assertThat(result.get(4), is("User: " + questions[2]));
-        assertThat(result.get(5), is("User: " + questions[3]));
-        assertThat(result.get(6), is("User: " + questions[4]));
-        assertThat(result.get(7), is("User: " + questions[5]));
-        assertThat(result.get(9), is("User: " + questions[6]));
-
-        int index = result.get(1).indexOf(" ") + 1;
-        assertThat(answers.contains(result.get(1).substring(index)), is(true));
-        assertThat(answers.contains(result.get(3).substring(index)), is(true));
-        assertThat(answers.contains(result.get(8).substring(index)), is(true));
-
-        assertThat(result.size(), is(10));
+        pathLog = folder.getRoot() + "/chat.log";
     }
 
+    @Test
+    public void whenOneAnswer() {
+        String[] questions = {"Привет", "Закончить"};
+        List<String> res = new ArrayList<>();
+        new Chat(new StubInput(questions), res::add).chat(file.getPath(), pathLog);
+
+        assertThat(answersOut.containsAll(res), is(true));
+        assertThat(res.size(), is(1));
+    }
+
+    @Test
+    public void whenStopAndContinue() {
+        String[] questions = {"Стоп", "Напиши что-нибудь", "Продолжить", "Напиши что-нибудь", "Закончить"};
+        List<String> res = new ArrayList<>();
+        new Chat(new StubInput(questions), res::add).chat(file.getPath(), pathLog);
+
+        assertThat(answersOut.containsAll(res), is(true));
+        assertThat(res.size(), is(1));
+    }
+
+    @Test
+    public void whenWriteLog() {
+        String[] questions = {"Привет", "Стоп", "Напиши что-нибудь", "Продолжить", "Напиши что-нибудь", "Закончить"};
+        new Chat(new StubInput(questions), x -> { }).chat(file.getPath(), pathLog);
+
+        List<String> outLog = null;
+        try {
+            outLog = Files.readAllLines(Paths.get(pathLog));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertThat(outLog.size(), is(8));
+    }
 }
