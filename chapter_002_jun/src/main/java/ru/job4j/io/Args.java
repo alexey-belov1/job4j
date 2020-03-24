@@ -1,5 +1,7 @@
 package ru.job4j.io;
 
+import java.util.function.Predicate;
+
 public class Args {
     private String directory;
     private String exclude;
@@ -10,14 +12,14 @@ public class Args {
     private String output;
 
     public Args(String[] args) {
+        Predicate<Integer> existValue = i -> i < args.length && !args[i].startsWith("-");
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
-                case "-d": this.directory = args[++i];
+                case "-d": this.directory = (existValue.test(++i)) ? args[i] : null;
                            break;
-                case "-e": this.exclude = args[i + 1].substring(args[i + 1].indexOf("*.") + 2);
-                           i++;
+                case "-e": this.exclude = (existValue.test(++i) && args[i].contains("*.")) ? args[i].substring(args[i].indexOf("*.") + 2) : null;
                            break;
-                case "-n": this.name = args[++i];
+                case "-n": this.name = (existValue.test(++i)) ? args[i] : null;
                            break;
                 case "-f": this.fullMatch = true;
                            break;
@@ -25,7 +27,7 @@ public class Args {
                            break;
                 case "-r": this.regex = true;
                            break;
-                case "-o": this.output = args[++i];
+                case "-o": this.output = (existValue.test(++i)) ? args[i] : null;
                            break;
                 default:   break;
             }
