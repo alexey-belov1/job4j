@@ -7,7 +7,7 @@ public class ReplaceAction implements UserAction {
     }
 
     @Override
-    public boolean execute(Input input, Tracker tracker) {
+    public boolean execute(Input input, ITracker tracker) {
         String id = input.askStr("Enter id selected item: ");
         String name = input.askStr("Enter new name: ");
         if (tracker.replace(id, new Item(name))) {
