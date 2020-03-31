@@ -8,6 +8,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.*;
 import java.nio.file.NotDirectoryException;
+import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -39,67 +40,71 @@ public class ShellTest {
         System.setOut(System.out);
     }
 
+    private String replace(String str) {
+        return str.replace('\\', '/');
+    }
+
     @Test
     public void whenGetRoot() throws IOException {
         Shell shell = new Shell(grandParent.getPath());
         shell = shell.cd("/");
-        assertThat(shell.cd("/").path(), is("C:\\"));
+        assertThat(List.of("C:", "").contains(replace(shell.cd("/").path())), is(true));
     }
 
     @Test
     public void whenUsePointSlash() throws IOException {
         Shell shell = new Shell(grandParent.getPath());
         shell = shell.cd("./");
-        assertThat(shell.path(), is(grandParent.getPath()));
+        assertThat(shell.path(), is(replace(grandParent.getPath())));
     }
 
     @Test
     public void whenToChild() throws IOException {
         Shell shell = new Shell(grandParent.getPath());
         shell = shell.cd("parent").cd("child");
-        assertThat(shell.path(), is(grandParent.getPath() + "\\parent\\child"));
+        assertThat(shell.path(), is(replace(grandParent.getPath()) + "/parent/child"));
     }
 
     @Test
     public void whenToChildInOneDirectory() throws IOException {
         Shell shell = new Shell(grandParent.getPath());
         shell = shell.cd("parent/child");
-        assertThat(shell.path(), is(grandParent.getPath() + "\\parent\\child"));
+        assertThat(shell.path(), is(replace(grandParent.getPath()) + "/parent/child"));
     }
 
     @Test
     public void whenToChildAndBack() throws IOException {
         Shell shell = new Shell(grandParent.getPath());
         shell = shell.cd("parent").cd("child").cd("..");
-        assertThat(shell.path(), is(grandParent.getPath() + "\\parent"));
+        assertThat(shell.path(), is(replace(grandParent.getPath()) + "/parent"));
     }
 
     @Test
     public void whenToChildAndBackAndUseSlash() throws IOException {
         Shell shell = new Shell(grandParent.getPath());
         shell = shell.cd("parent").cd("child").cd("../");
-        assertThat(shell.path(), is(grandParent.getPath() + "\\parent"));
+        assertThat(shell.path(), is(replace(grandParent.getPath()) + "/parent"));
     }
 
     @Test
     public void whenToChildAndTwiceBack() throws IOException {
         Shell shell = new Shell(grandParent.getPath());
         shell = shell.cd("parent").cd("child").cd("../../");
-        assertThat(shell.path(), is(grandParent.getPath()));
+        assertThat(shell.path(), is(replace(grandParent.getPath())));
     }
 
     @Test
     public void whenToChildAndTwiceBackAndToParent() throws IOException {
         Shell shell = new Shell(grandParent.getPath());
         shell = shell.cd("parent").cd("child").cd("../../parent");
-        assertThat(shell.path(), is(grandParent.getPath() + "\\parent"));
+        assertThat(shell.path(), is(replace(grandParent.getPath()) + "/parent"));
     }
 
     @Test
     public void whenNotExistDirectory() throws IOException {
         Shell shell = new Shell(grandParent.getPath());
         shell = shell.cd("err");
-        assertThat(shell.path(), is(grandParent.getPath()));
+        assertThat(shell.path(), is(replace(grandParent.getPath())));
         assertThat(this.out.toString(), is("Не удалось найти указанный путь" + System.lineSeparator()));
     }
 
@@ -107,14 +112,14 @@ public class ShellTest {
     public void whenToChildAndTwiceBackAndNotExitDirectory() throws IOException {
         Shell shell = new Shell(grandParent.getPath());
         shell = shell.cd("parent").cd("child").cd("../../err");
-        assertThat(shell.path(), is(grandParent.getPath() + "\\parent\\child"));
+        assertThat(shell.path(), is(replace(grandParent.getPath()) + "/parent/child"));
         assertThat(this.out.toString(), is("Не удалось найти указанный путь" + System.lineSeparator()));
     }
 
     @Test
     public void whenEmptyShellGetRoot() throws IOException {
         Shell shell = new Shell();
-        assertThat(shell.cd("/").path(), is("C:\\"));
+        assertThat(List.of("C:", "").contains(shell.cd("/").path()), is(true));
     }
 
     @Test(expected = NotDirectoryException.class)
@@ -126,13 +131,6 @@ public class ShellTest {
     public void whenGetRootAndThenGetParent() throws IOException {
         Shell shell = new Shell(grandParent.getPath());
         shell = shell.cd("/").cd("../../");
-        assertThat(shell.path(), is("C:\\"));
-    }
-
-    @Test
-    public void whenToChildBackAndManyPoint() throws IOException {
-        Shell shell = new Shell(grandParent.getPath());
-        shell = shell.cd("parent").cd("child").cd("../.....");
-        assertThat(shell.path(), is(grandParent.getPath() + "\\parent"));
+        assertThat(List.of("C:", "").contains(shell.cd("/").path()), is(true));
     }
 }
