@@ -13,7 +13,7 @@ public class TrackerSQL implements ITracker, AutoCloseable {
     private Connection connection;
     private static final Logger LOG = LogManager.getLogger(TrackerSQL.class.getName());
 
-    public boolean init() {
+    public TrackerSQL() {
         try (InputStream in = TrackerSQL.class.getClassLoader().getResourceAsStream("app.properties")) {
             Properties config = new Properties();
             config.load(in);
@@ -34,7 +34,13 @@ public class TrackerSQL implements ITracker, AutoCloseable {
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
+    }
 
+    public TrackerSQL(Connection connection) {
+        this.connection = connection;
+    }
+
+    public boolean available() {
         return this.connection != null;
     }
 
@@ -151,21 +157,21 @@ public class TrackerSQL implements ITracker, AutoCloseable {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         Input input = new ConsoleInput();
         Input validate = new ValidateInput(input);
-        TrackerSQL tracker = new TrackerSQL();
-        tracker.init();
-        ArrayList<UserAction> actions = new ArrayList<UserAction>();
+        try (TrackerSQL tracker = new TrackerSQL()) {
+            ArrayList<UserAction> actions = new ArrayList<UserAction>();
 
-        actions.add(new CreateAction());
-        actions.add(new ShowAction());
-        actions.add(new ReplaceAction());
-        actions.add(new DeleteAction());
-        actions.add(new FindByIdAction());
-        actions.add(new FindByNameAction());
-        actions.add(new ExitAction());
+            actions.add(new CreateAction());
+            actions.add(new ShowAction());
+            actions.add(new ReplaceAction());
+            actions.add(new DeleteAction());
+            actions.add(new FindByIdAction());
+            actions.add(new FindByNameAction());
+            actions.add(new ExitAction());
 
-        new StartUI(validate, tracker, System.out::println).init(actions);
+            new StartUI(validate, tracker, System.out::println).init(actions);
+        }
     }
 }
