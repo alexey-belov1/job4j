@@ -6,13 +6,19 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.*;
 
 public class TrackerSQLTest {
+
+    private List<String> toListString(List<Item> list) {
+        return list.stream().map(Item::getName).collect(Collectors.toList());
+    }
 
     public Connection init() {
         try (InputStream in = TrackerSQL.class.getClassLoader().getResourceAsStream("app.properties")) {
@@ -40,8 +46,9 @@ public class TrackerSQLTest {
     @Test
     public void whenAddAndFindByName() throws SQLException {
         try (TrackerSQL tracker = new TrackerSQL(ConnectionRollback.create(this.init()))) {
-            tracker.add(new Item("test"));
-            assertThat(tracker.findByName("test").size(), is(1));
+            String name = "test";
+            tracker.add(new Item(name));
+            assertThat(toListString(tracker.findByName(name)), is(List.of(name)));
         }
     }
 
@@ -57,19 +64,23 @@ public class TrackerSQLTest {
     @Test
     public void whenFindAll() throws SQLException {
         try (TrackerSQL tracker = new TrackerSQL(ConnectionRollback.create(this.init()))) {
-            tracker.add(new Item("test1"));
-            tracker.add(new Item("test2"));
-            assertThat(tracker.findAll().size(), is(2));
+            String name1 = "test1";
+            String name2 = "test2";
+            tracker.add(new Item(name1));
+            tracker.add(new Item(name2));
+            assertThat(toListString(tracker.findAll()), is(List.of(name1, name2)));
         }
     }
 
     @Test
     public void whenHasSameName() throws SQLException {
         try (TrackerSQL tracker = new TrackerSQL(ConnectionRollback.create(this.init()))) {
-            tracker.add(new Item("test1"));
-            tracker.add(new Item("test2"));
-            tracker.add(new Item("test1"));
-            assertThat(tracker.findByName("test1").size(), is(2));
+            String name1 = "test1";
+            String name2 = "test2";
+            tracker.add(new Item(name1));
+            tracker.add(new Item(name2));
+            tracker.add(new Item(name1));
+            assertThat(toListString(tracker.findByName(name1)), is(List.of(name1, name1)));
         }
     }
 
