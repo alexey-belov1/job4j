@@ -3,10 +3,11 @@ package ru.job4j.srp;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class HrReportEngine implements Report {
+public class HrReportEngine extends SupportFormats implements Report  {
     private Store store;
 
     public HrReportEngine(Store store) {
+        super(store);
         this.store = store;
     }
 
