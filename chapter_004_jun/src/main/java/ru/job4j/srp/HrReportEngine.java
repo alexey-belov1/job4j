@@ -3,12 +3,13 @@ package ru.job4j.srp;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class HrReportEngine extends SupportFormats implements Report  {
+public class HrReportEngine implements Report  {
     private Store store;
+    private SupportFormats formats;
 
     public HrReportEngine(Store store) {
-        super(store);
         this.store = store;
+        formats = new SupportFormats(store);
     }
 
     @Override
@@ -26,5 +27,20 @@ public class HrReportEngine extends SupportFormats implements Report  {
                     .append(employee.getSalary()).append(";");
         }
         return text.toString();
+    }
+
+    @Override
+    public String generateHtml(Predicate<Employee> filter) {
+        return formats.generateHtml(filter);
+    }
+
+    @Override
+    public String generateXml(Predicate<Employee> filter) {
+        return formats.generateXml(filter);
+    }
+
+    @Override
+    public String generateJson(Predicate<Employee> filter) {
+        return formats.generateJson(filter);
     }
 }

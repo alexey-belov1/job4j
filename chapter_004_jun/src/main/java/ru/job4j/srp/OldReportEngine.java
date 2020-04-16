@@ -2,12 +2,13 @@ package ru.job4j.srp;
 
 import java.util.function.Predicate;
 
-public class OldReportEngine extends SupportFormats implements Report {
+public class OldReportEngine implements Report {
     private Store store;
+    private SupportFormats formats;
 
     public OldReportEngine(Store store) {
-        super(store);
         this.store = store;
+        formats = new SupportFormats(store);
     }
 
     @Override
@@ -24,4 +25,18 @@ public class OldReportEngine extends SupportFormats implements Report {
         return text.toString();
     }
 
+    @Override
+    public String generateHtml(Predicate<Employee> filter) {
+        return formats.generateHtml(filter);
+    }
+
+    @Override
+    public String generateXml(Predicate<Employee> filter) {
+        return formats.generateXml(filter);
+    }
+
+    @Override
+    public String generateJson(Predicate<Employee> filter) {
+        return formats.generateJson(filter);
+    }
 }

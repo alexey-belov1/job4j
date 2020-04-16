@@ -2,12 +2,13 @@ package ru.job4j.srp;
 
 import java.util.function.Predicate;
 
-public class AccountingReportEngine extends SupportFormats implements Report {
+public class AccountingReportEngine implements Report {
     private Store store;
+    private SupportFormats formats;
 
     public AccountingReportEngine(Store store) {
-        super(store);
         this.store = store;
+        formats = new SupportFormats(store);
     }
 
     @Override
@@ -22,5 +23,20 @@ public class AccountingReportEngine extends SupportFormats implements Report {
                     .append(String.format("%.2f$", employee.getSalary() / 75.0)).append(";");
         }
         return text.toString();
+    }
+
+    @Override
+    public String generateHtml(Predicate<Employee> filter) {
+        return formats.generateHtml(filter);
+    }
+
+    @Override
+    public String generateXml(Predicate<Employee> filter) {
+        return formats.generateXml(filter);
+    }
+
+    @Override
+    public String generateJson(Predicate<Employee> filter) {
+        return formats.generateJson(filter);
     }
 }
