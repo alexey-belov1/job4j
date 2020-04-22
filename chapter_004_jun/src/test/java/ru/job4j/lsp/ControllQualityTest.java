@@ -48,7 +48,7 @@ public class ControllQualityTest {
             put(trash, new PutInTrash());
         } };
 
-        new ControllQuality().redistribute(map);
+        new ControllQuality().resort(map);
 
         List<Food> inShop = new ArrayList<>(List.of(shop.poll(), shop.poll()));
         inShop.sort(Comparator.comparing(Food::getName));

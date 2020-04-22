@@ -7,7 +7,7 @@ import java.util.Queue;
 
 public class ControllQuality {
 
-    public void redistribute(Map<Storage, PutInStorage> map) {
+    public void resort(Map<Storage, PutInStorage> map) {
         Queue<Food> foods = new LinkedList<>();
         for (Storage st : map.keySet()) {
             Food food;
