@@ -1,22 +1,36 @@
 package ru.job4j.parking;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Common parking, which consist of PassengersParking and TrucksParking
  */
-public class CommonParking extends PassengerParking {
+public class CommonParking implements Parking {
 
     /**
+     * Parking for passenger cars
+     * Pairs: key - place in parking;
+     *        value - Car.
+     */
+    private Map<Integer, Car> passengerCarPark;
+
+    /**
+     * Parking for trucks
      * Pairs: key - place in parking;
      *        value - Car.
      */
     private Map<Integer, Car> truckPark;
 
     public CommonParking(int sizePassengerParking, int sizeTruckParking) {
-        super(sizePassengerParking);
+        this.passengerCarPark = new HashMap<>(sizePassengerParking);
+        for (int i = 1; i <= sizePassengerParking; i++) {
+            this.passengerCarPark.put(i, null);
+        }
+
+        this.truckPark = new HashMap<>(sizeTruckParking);
         for (int i = 1; i <= sizeTruckParking; i++) {
-            truckPark.put(i, null);
+            this.truckPark.put(i, null);
         }
     }
 
@@ -31,7 +45,12 @@ public class CommonParking extends PassengerParking {
     }
 
     @Override
-    public int freePlaces() {
+    public int freePlacesForPassengerCar() {
+        return 0;
+    }
+
+    @Override
+    public int freePlacesForTruck() {
         return 0;
     }
 }

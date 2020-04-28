@@ -17,8 +17,14 @@ public interface Parking {
     boolean rideOut(Car car);
 
     /**
-     * Get free places on the parking
+     * Get free places on the parking for passenger car
      * @return free places
      */
-    int freePlaces();
+    int freePlacesForPassengerCar();
+
+    /**
+     * Get free places on the parking for truck
+     * @return free places
+     */
+    int freePlacesForTruck();
 }
