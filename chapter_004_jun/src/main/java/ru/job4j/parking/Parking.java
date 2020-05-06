@@ -4,23 +4,23 @@ public interface Parking {
 
     /**
      * Get in on the parking
-     * @param car Car
+     * @param vehicle Vehicle
      * @return return false if impossible
      */
-    boolean rideIn(Car car);
+    boolean rideIn(Vehicle vehicle);
 
     /**
      * Get out of the parking
-     * @param car Car
+     * @param vehicle Vehicle
      * @return return false if car not found
      */
-    boolean rideOut(Car car);
+    boolean rideOut(Vehicle vehicle);
 
     /**
-     * Get free places on the parking for passenger car
+     * Get free places on the parking for car
      * @return free places
      */
-    int freePlacesForPassengerCar();
+    int freePlacesForCar();
 
     /**
      * Get free places on the parking for truck
