@@ -44,5 +44,4 @@ group by m.name;
 select m.name from meet as m
 left outer join (select m.name from meet as m, person_at_meeting as pm
 	where m.id = pm.meet_id and pm.status_id = 1) as res on m.name = res.name
-group by m.name
-having count(res) = 0;
+where res.name is null;
