@@ -23,6 +23,11 @@
     <profiles>
         <profile>
             <id>test</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
             <properties>
                 <db.tracker.url>jdbc:postgresql://localhost/tracker</db.tracker.url>
                 <db.parser.url>jdbc:postgresql://localhost/parser</db.parser.url>

@@ -10,11 +10,25 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>chapter_005_jun</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>ru.job4j</groupId>
             <artifactId>chapter_002</artifactId>
             <version>3.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core -->
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>1.23</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-generator-annprocess -->
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>1.23</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
