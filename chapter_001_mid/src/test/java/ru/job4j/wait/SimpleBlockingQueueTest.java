@@ -16,13 +16,23 @@ public class SimpleBlockingQueueTest {
 
         Thread producer = new Thread(() -> {
             for (int i = 0; i < 10; i++) {
-                queue.offer(arrayFrom[i]);
+                try {
+                    queue.offer(arrayFrom[i]);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+
             }
         });
 
         Thread consumer = new Thread(() -> {
             for (int i = 0; i < 10; i++) {
-                arrayTo[i] = queue.poll();
+                try {
+                    arrayTo[i] = queue.poll();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+
             }
         });
 
