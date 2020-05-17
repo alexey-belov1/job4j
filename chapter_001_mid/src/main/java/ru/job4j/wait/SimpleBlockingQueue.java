@@ -22,7 +22,7 @@ public class SimpleBlockingQueue<T> {
     }
 
     public synchronized void offer(T value) throws InterruptedException  {
-        if (this.count == this.size) {
+        while (this.count == this.size) {
             this.wait();
         }
         this.count++;
@@ -31,12 +31,13 @@ public class SimpleBlockingQueue<T> {
     }
 
     public synchronized T poll() throws InterruptedException {
-        if (this.count == 0) {
+        while (this.count == 0) {
             this.wait();
         }
         this.count--;
+        T temp = this.queue.poll();
         this.notify();
-        return this.queue.poll();
+        return temp;
     }
 
     public synchronized boolean isEmpty() {
