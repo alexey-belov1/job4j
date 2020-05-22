@@ -18,13 +18,11 @@ public class CountBarrier {
 
     public synchronized void count() {
         count++;
-        if (check()) {
-            monitor.notifyAll();
-        }
+        monitor.notifyAll();
     }
 
     public synchronized void await() {
-        if (!check()) {
+        while (count < total) {
             try {
                 monitor.wait();
             } catch (InterruptedException e) {
@@ -33,7 +31,4 @@ public class CountBarrier {
         }
     }
 
-    private synchronized boolean check() {
-        return count == total;
-    }
 }
